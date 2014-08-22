@@ -26,7 +26,7 @@ func (s *SqlIntArray) Scan(src interface{}) error {
 
 	for buf.Len() > 0 { // greater than 1 number left
 		intBytes, err := buf.ReadBytes(',')
-		if err != nil && intBytes[0] == '}' {
+		if err != nil && len(intBytes) == 1 {
 			break
 		}
 		num, _ := strconv.ParseInt(string(intBytes[0:len(intBytes)-1]), 10, 64)
@@ -58,11 +58,22 @@ func (s *SqlStringArray) Scan(src interface{}) error {
 	}
 
 	for buf.Len() > 0 { // greater than 1 number left
-		intBytes, err := buf.ReadBytes(',')
-		if err != nil && intBytes[0] == '}' {
-			break
+		var stringBytes []byte
+		for {
+			bufBytes, err := buf.ReadBytes(',')
+			if err != nil && len(bufBytes) == 1 { // EOF w/ '}'
+				return nil
+			}
+			stringBytes = append(stringBytes, bufBytes...)
+
+			// break if empty or actual word delimeter
+			if len(buf.Bytes()) == 0 || buf.Bytes()[0] == '"' {
+				break
+			}
 		}
-		s.Data = append(s.Data, string(intBytes[0:len(intBytes)-1]))
+
+		// offset to account for quotations
+		s.Data = append(s.Data, string(stringBytes[1:len(stringBytes)-2]))
 	}
 
 	return nil
