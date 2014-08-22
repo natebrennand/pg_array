@@ -1,4 +1,4 @@
-package pg_array
+package pgarray
 
 import "testing"
 
@@ -28,8 +28,8 @@ func TestStringArrayScan(t *testing.T) {
 		arr.Scan(s.Wire)
 
 		if len(s.Expected) != len(arr.Data) {
-			t.Error("EXPECTED: %v", s.Expected)
-			t.Error("FOUND: %v", arr.Data)
+			t.Errorf("EXPECTED: %v", s.Expected)
+			t.Errorf("FOUND: %v", arr.Data)
 			t.Fatal("Scan did not yield enough values")
 		}
 
@@ -67,14 +67,14 @@ func TestIntArrayScan(t *testing.T) {
 		arr.Scan(s.Wire)
 
 		if len(s.Expected) != len(arr.Data) {
-			t.Error("EXPECTED: %v", s.Expected)
-			t.Error("FOUND: %v", arr.Data)
+			t.Errorf("EXPECTED: %v", s.Expected)
+			t.Errorf("FOUND: %v", arr.Data)
 			t.Fatal("Scan did not yield enough values")
 		}
 
 		for i, d := range s.Expected {
 			if d != arr.Data[i] {
-				t.Errorf("Mismatch, expected %s, found %s", d, arr.Data[i])
+				t.Errorf("Mismatch, expected %d, found %d", d, arr.Data[i])
 			}
 		}
 	}

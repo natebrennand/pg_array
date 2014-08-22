@@ -1,4 +1,4 @@
-package pg_array
+package pgarray
 
 import (
 	"bytes"
@@ -7,14 +7,18 @@ import (
 	"strconv"
 )
 
+// SqlIntArray allows Postgres arrays of integers to be scanned
 type SqlIntArray struct {
 	Data []int64
 }
 
+// String implements the Stringer interface for ease of use
 func (s SqlIntArray) String() string {
 	return fmt.Sprintf("%v, ", s.Data)
 }
 
+// Scan implemented for the Scanner iterface which allows scanning
+// from sql.Row
 func (s *SqlIntArray) Scan(src interface{}) error {
 	buf := bytes.NewBuffer(src.([]byte))
 	s.Data = make([]int64, 0)
@@ -36,18 +40,23 @@ func (s *SqlIntArray) Scan(src interface{}) error {
 	return nil
 }
 
+// MarshalJSON implements Marshaler for ease of use
 func (s SqlIntArray) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.Data)
 }
 
+// SqlStringArray allows Postgres arrays of strings to be scanned
 type SqlStringArray struct {
 	Data []string
 }
 
+// String implements the Stringer interface for ease of use
 func (s SqlStringArray) String() string {
 	return fmt.Sprintf("%v, ", s.Data)
 }
 
+// Scan implemented for the Scanner iterface which allows scanning
+// from sql.Row
 func (s *SqlStringArray) Scan(src interface{}) error {
 	buf := bytes.NewBuffer(src.([]byte))
 	s.Data = make([]string, 0)
@@ -79,6 +88,7 @@ func (s *SqlStringArray) Scan(src interface{}) error {
 	return nil
 }
 
+// MarshalJSON implements Marshaler for ease of use
 func (s SqlStringArray) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.Data)
 }
