@@ -2,6 +2,7 @@ package pg_array
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"strconv"
 )
@@ -35,6 +36,10 @@ func (s *SqlIntArray) Scan(src interface{}) error {
 	return nil
 }
 
+func (s SqlIntArray) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.Data)
+}
+
 type SqlStringArray struct {
 	Data []string
 }
@@ -61,4 +66,8 @@ func (s *SqlStringArray) Scan(src interface{}) error {
 	}
 
 	return nil
+}
+
+func (s SqlStringArray) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.Data)
 }
